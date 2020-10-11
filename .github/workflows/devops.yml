@@ -14,7 +14,18 @@ jobs:
       - uses: actions/setup-dotnet@v1
         with:
           dotnet-vesion: "3.1.x"
-      - name: "Build"
+      - name: "Build & Test"
         run: dotnet build
       - name: "Test"
         run: dotnet test
+      - name: "Publish"
+        run: |
+          dotnet publish dxmapp -r win-x64 -c Release -p:PublishSingleFile=true --self-contained false
+          dotnet publish dxm -r win-x64 -c Release -p:PublishSingleFile=true --self-contained false
+      - name: "Deploy"
+        uses: actions/upload-artifact@v2
+        with:
+          name: apps
+          path: |
+            dxmapp/bin/Release/netcoreapp3.1/win-x64/publish/**/*
+            dxm/bin/Release/netcoreapp3.1/win-x64/publish/**/*
